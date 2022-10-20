@@ -1,9 +1,10 @@
     {% extends 'ejemplo/base.html' %}
-    {% block titulo%} Lista de todos mis Familiares {% endblock %}
+    {% block titulo%} Lista de todos mis Familiares 
+    {% endblock %}
     {% block contenido %}
-      {% for familiar in lista_familiares %}
+        {% for familiar in lista_familiares %}
           <ul>
               <li> Nombre: {{familiar.nombre}}, Dirección: {{familiar.direccion}}, Pasaporte: {{familiar.numero_pasaporte}}</li>
           </ul>
-      {% endfor %}
+        {% endfor %}
     {% endblock %}
