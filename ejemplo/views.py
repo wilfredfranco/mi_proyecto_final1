@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from ejemplo.models import Familiar
-from ejemplo.forms import Buscar # <--- NUEVO IMPORT
+from ejemplo.forms import Buscar, FamiliarForm # <--- NUEVO IMPORT
 from django.views import View # <-- NUEVO IMPORT 
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView  # <----- NUEVO IMPORT
 
 # Create your views here.
 def index(request):
@@ -56,3 +57,44 @@ class BuscarFamiliar(View):
                                                         'lista_familiares':lista_familiares})
 
         return render(request, self.template_name, {"form": form})
+
+    
+class AltaFamiliar(View):
+
+    form_class = FamiliarForm
+    template_name = 'ejemplo/alta_familiar.html'
+    initial = {"nombre":"", "direccion":"", "numero_pasaporte":""}
+
+    def get(self, request):
+        form = self.form_class(initial=self.initial)
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            msg_exito = f"se cargo con éxito el familiar {form.cleaned_data.get('nombre')}"
+            form = self.form_class(initial=self.initial)
+            return render(request, self.template_name, {'form':form, 
+                                                        'msg_exito': msg_exito})
+        
+        return render(request, self.template_name, {"form": form})
+    
+class FamiliarList(ListView):
+  model = Familiar
+
+class FamiliarCrear(CreateView):
+  model = Familiar
+  success_url = "/panel-familia"
+  fields = ["nombre", "direccion", "numero_pasaporte"]
+
+class FamiliarBorrar(DeleteView):
+  model = Familiar
+  success_url = "/panel-familia"
+
+class FamiliarActualizar(UpdateView):
+  model = Familiar
+  success_url = "/panel-familia"
+  fields = ["nombre", "direccion", "numero_pasaporte"]
+
+    
